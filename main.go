@@ -228,9 +228,11 @@ func main() {
 		t = Insert(t, v)
 	}
 
-	// Display the t
-	s := ""
+	// Send result to stdout
+	// Display(t, os.Stdout)
 
+	// Display the tree on Web browser
+	s := ""
 	buf := bytes.NewBufferString(s)
 	Display(t, buf)
 
