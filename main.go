@@ -145,6 +145,7 @@ func Search(t *Tree, val string) bool {
 }
 
 // Compute the position of each sub trees in the tree
+// Full recursive version
 func Position(t *Tree, x int, y int) int {
 
 	if t.left != nil {
@@ -162,6 +163,34 @@ func Position(t *Tree, x int, y int) int {
 	return x
 }
 
+// Compute the position of each sub trees in the tree
+// Half recursive version
+func Position2(t *Tree, x int, y int) int {
+
+	for t != nil {
+		if t.left != nil {
+			x = Position(t.left, x, y+1)
+		}
+
+		t.X = x
+		t.Y = y
+
+		x = x + 1
+		y = y + 1
+		t = t.right
+	}
+
+	return x
+}
+
+// Apply transformation
+func Transform(x int, y int) (int, int) {
+	x1 := int(dx*float64(x) + mx)
+	y1 := int(dy*float64(y) + my)
+
+	return x1, y1
+}
+
 // Drawing the sub trees in SVG
 func Draw(t *Tree, canvas *svg.SVG) {
 	if t == nil {
@@ -169,13 +198,11 @@ func Draw(t *Tree, canvas *svg.SVG) {
 	}
 
 	h, _ := strconv.Atoi(fontSize)
-	x1 := int(dx*float64(t.X) + mx)
-	y1 := int(dy*float64(t.Y) + my)
+	x1, y1 := Transform(t.X, t.Y)
 
 	if t.left != nil {
 		left := t.left
-		x2 := int(dx*float64(left.X) + mx)
-		y2 := int(dy*float64(left.Y) + my)
+		x2, y2 := Transform(left.X, left.Y)
 		// log.Printf("x1:%d y1:%d x2:%d y2:%d %s\n", x1, y1, x2, y2, lineStyle)
 
 		canvas.Line(x1, y1+(h/2), x2, y2-h, lineStyle)
@@ -184,8 +211,7 @@ func Draw(t *Tree, canvas *svg.SVG) {
 
 	if t.right != nil {
 		right := t.right
-		x2 := int(dx*float64(right.X) + mx)
-		y2 := int(dy*float64(right.Y) + my)
+		x2, y2 := Transform(right.X, right.Y)
 		// log.Printf("x1:%d y1:%d x2:%d y2:%d %s\n", x1, y1, x2, y2, lineStyle)
 
 		canvas.Line(x1, y1+(h/2), x2, y2-h, lineStyle)
@@ -198,7 +224,7 @@ func Draw(t *Tree, canvas *svg.SVG) {
 // Drawing the tree in  SVG
 func Display(t *Tree, w io.Writer) {
 
-	tWidth := Position(t, 0, 0)
+	tWidth := Position2(t, 0, 0)
 	tHeight := Height(t)
 
 	canvas := svg.New(w)
