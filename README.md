@@ -39,7 +39,7 @@ You may execute the program with a short text as parameter :
 go run main.go this is time to said hello world one more time
 ```
 
-If you want display the frequencies use the -d option like this : 
+If you want display the words frequencies use the -d option like this : 
 
 ```sh
 go run main.go -d=f this is time to said hello world one more time
