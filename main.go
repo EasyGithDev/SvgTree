@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -23,10 +22,10 @@ var (
 	textStyle string = "text-anchor:middle;font-size:" + fontSize + "px;fill:black"
 	lineStyle string = "stroke:rgb(255,0,0);stroke-width:2"
 	rectStyle string = "fill:rgb(255,255,255);stroke-width:2;stroke:rgb(0,0,0)"
-	dx        float64
-	dy        float64
-	mx        float64
-	my        float64
+	dx        int
+	dy        int
+	mx        int
+	my        int
 
 	// Frequence format
 	format = func(t *Tree) string {
@@ -71,11 +70,19 @@ func NewTree() *Tree {
 }
 
 // Compute the tree height
-func Height(t *Tree) float64 {
+func Height(t *Tree) int {
 	if t == nil {
 		return 0
 	}
-	return math.Max(Height(t.left), Height(t.right)) + float64(1)
+
+	hl := Height(t.left)
+	hr := Height(t.right)
+	max := hl
+	if hl < hr {
+		max = hr
+	}
+
+	return max + 1
 }
 
 // Display tree in pre order
@@ -185,8 +192,8 @@ func Position2(t *Tree, x int, y int) int {
 
 // Apply transformation
 func Transform(x int, y int) (int, int) {
-	x1 := int(dx*float64(x) + mx)
-	y1 := int(dy*float64(y) + my)
+	x1 := dx*x + mx
+	y1 := dy*y + my
 
 	return x1, y1
 }
@@ -227,12 +234,14 @@ func Display(t *Tree, w io.Writer) {
 	tWidth := Position2(t, 0, 0)
 	tHeight := Height(t)
 
+	fmt.Printf("w:%d h:%d", tWidth, tHeight)
+
 	canvas := svg.New(w)
 	canvas.Start(canvasWidth, canvasHeight)
 	canvas.Rect(0, 0, canvasWidth, canvasHeight, rectStyle)
 
-	dx = float64(canvasWidth) / float64(tWidth)
-	dy = float64(canvasHeight) / float64(tHeight)
+	dx = canvasWidth / tWidth
+	dy = canvasHeight / tHeight
 	mx = dx / 2
 	my = dy / 2
 
