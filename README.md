@@ -42,13 +42,13 @@ go run main.go this is time to said hello world one more time
 If you want display the frequencies use the -d option like this : 
 
 ```sh
-go run main.go -d=f this is time to said hello world one more time > tree.svg
+go run main.go -d=f this is time to said hello world one more time
 ```
 
 If you want display the node position use the -d option like this : 
 
 ```sh
-go run main.go -d=p this is time to said hello world one more time > tree.svg
+go run main.go -d=p this is time to said hello world one more time
 ```
 
 ## Display the result
