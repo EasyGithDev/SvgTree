@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -27,15 +28,10 @@ var (
 	mx        int
 	my        int
 
-	// Frequence format
+	// Default format
 	format = func(t *Tree) string {
-		return fmt.Sprintf("%s (f:%d)", t.val, t.freq)
+		return t.val
 	}
-
-	// Position format
-	// format = func(t *Tree) string {
-	// 	return t.String()
-	// }
 )
 
 // Tree position
@@ -234,16 +230,16 @@ func Display(t *Tree, w io.Writer) {
 	tWidth := Position2(t, 0, 0)
 	tHeight := Height(t)
 
-	fmt.Printf("w:%d h:%d", tWidth, tHeight)
-
-	canvas := svg.New(w)
-	canvas.Start(canvasWidth, canvasHeight)
-	canvas.Rect(0, 0, canvasWidth, canvasHeight, rectStyle)
-
 	dx = canvasWidth / tWidth
 	dy = canvasHeight / tHeight
 	mx = dx / 2
 	my = dy / 2
+
+	// fmt.Printf("w:%d h:%d", tWidth, tHeight)
+
+	canvas := svg.New(w)
+	canvas.Start(canvasWidth, canvasHeight)
+	canvas.Rect(0, 0, canvasWidth, canvasHeight, rectStyle)
 
 	Draw(t, canvas)
 	canvas.End()
@@ -251,15 +247,30 @@ func Display(t *Tree, w io.Writer) {
 
 func main() {
 
-	if len(os.Args[1:]) == 0 {
+	display := flag.String("d", "", "-d=[f,p] to display frequencies (f) or positions (p)")
+	flag.Parse()
+
+	if len(os.Args[1+flag.NFlag():]) == 0 {
 		log.Println("You must enter somme words ...")
 		os.Exit(1)
+	}
+
+	if *display == "p" {
+		// Position format
+		format = func(t *Tree) string {
+			return t.String()
+		}
+	} else if *display == "f" {
+		// Frequence format
+		format = func(t *Tree) string {
+			return fmt.Sprintf("%s (f:%d)", t.val, t.freq)
+		}
 	}
 
 	// Create the t
 	var t *Tree
 
-	for _, v := range os.Args[1:] {
+	for _, v := range os.Args[1+flag.NFlag():] {
 		t = Insert(t, v)
 	}
 

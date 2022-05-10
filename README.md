@@ -39,6 +39,18 @@ You may execute the program with a short text as parameter :
 go run main.go this is time to said hello world one more time
 ```
 
+If you want display the frequencies use the -d option like this : 
+
+```sh
+go run main.go -d=f this is time to said hello world one more time > tree.svg
+```
+
+If you want display the node position use the -d option like this : 
+
+```sh
+go run main.go -d=p this is time to said hello world one more time > tree.svg
+```
+
 ## Display the result
 
 Open a web browser and enter the URL :
