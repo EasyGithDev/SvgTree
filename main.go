@@ -248,6 +248,8 @@ func Display(t *Tree, w io.Writer) {
 func main() {
 
 	display := flag.String("d", "", "-d=[f,p] to display frequencies (f) or positions (p)")
+	output := flag.String("o", "web", "-o=[web,stdout] output on webserver (web) or stdout (stdout)")
+
 	flag.Parse()
 
 	if len(os.Args[1+flag.NFlag():]) == 0 {
@@ -275,22 +277,27 @@ func main() {
 	}
 
 	// Send result to stdout
-	// Display(t, os.Stdout)
+	if *output == "stdout" {
+		Display(t, os.Stdout)
 
-	// Display the tree on Web browser
-	s := ""
-	buf := bytes.NewBufferString(s)
-	Display(t, buf)
+	} else {
 
-	// Send the output to the client
-	http.Handle("/", http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "image/svg+xml")
-			w.Write(buf.Bytes())
-		}))
-	err := http.ListenAndServe(":8000", nil)
-	if err != nil {
-		log.Fatal("ListenAndServe:", err)
+		// Display the tree on Web browser
+		s := ""
+		buf := bytes.NewBufferString(s)
+		Display(t, buf)
+
+		// Send the output to the client
+		http.Handle("/", http.HandlerFunc(
+			func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "image/svg+xml")
+				w.Write(buf.Bytes())
+			}))
+		err := http.ListenAndServe(":8000", nil)
+		if err != nil {
+			log.Fatal("ListenAndServe:", err)
+		}
+
 	}
 
 }
