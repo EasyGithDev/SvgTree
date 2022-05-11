@@ -39,17 +39,24 @@ You may execute the program with a short text as parameter :
 go run main.go this is time to said hello world one more time
 ```
 
+![alt text](../assets/tree.svg?raw=true)
+
 If you want display the words frequencies use the -d option like this : 
 
 ```sh
 go run main.go -d=f this is time to said hello world one more time
 ```
 
+![alt text](../assets/tree-f.svg?raw=true)
+
+
 If you want display the node position use the -d option like this : 
 
 ```sh
 go run main.go -d=p this is time to said hello world one more time
 ```
+
+![alt text](../assets/tree-p.svg?raw=true)
 
 ## Display the result
 
@@ -60,23 +67,8 @@ http://localhost:8000/
 ## Write the result
 
 You can choose to generate a SGV file to save the result.
-You must change the writer in the program like this :
-
-```go
-
-// Send result to stdout
-Display(t, os.Stdout)
-
-// Display the tree on Web browser
-// s := ""
-
-// buf := bytes.NewBufferString(s)
-// Display(t, buf)
-
-```
-
-Now, you may execute the program like this :
+You must change the output like this :
 
 ```sh
-go run main.go this is time to said hello world one more time > tree.svg
+go run main.go -o=stdout this is time to said hello world one more time > tree.svg
 ```
